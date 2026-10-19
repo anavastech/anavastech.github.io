@@ -1,0 +1,225 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import ProjectCard from './ProjectCard.astro';
+import { homePath, t, type Lang } from '../i18n/ui';
+import { education, experience, profile, skills } from '../data/profile';
+import { projects } from '../data/projects';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+---
+
+<Base lang={lang} title={`${profile.shortName} — ${t(lang, 'hero.role')}`} alternate={homePath(otherLang)}>
+  <Hero lang={lang} />
+
+  <section id="sobre-mi" class="section" aria-labelledby="about-title">
+    <div class="container narrow">
+      <h2 id="about-title" class="section-title">{t(lang, 'about.title')}</h2>
+      {profile.about[lang].map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section id="experiencia" class="section" aria-labelledby="experience-title">
+    <div class="container">
+      <h2 id="experience-title" class="section-title">{t(lang, 'experience.title')}</h2>
+      <ol class="timeline">
+        {
+          experience.map((job) => (
+            <li class="card job">
+              <div class="job-head">
+                <h3>
+                  {job.role[lang]} · <span class="company">{job.company}</span>
+                </h3>
+                <p class="period">{job.period[lang]}</p>
+              </div>
+              <ul>
+                {job.bullets[lang].map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section id="habilidades" class="section" aria-labelledby="skills-title">
+    <div class="container">
+      <h2 id="skills-title" class="section-title">{t(lang, 'skills.title')}</h2>
+      <div class="skills">
+        {
+          skills.map((group) => (
+            <div class="card skill-group">
+              <h3>{group.name[lang]}</h3>
+              <ul>
+                {group.items.map((item) => <li class="tag">{item}</li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2 class="section-title education-title">{t(lang, 'education.title')}</h2>
+      <div class="card education">
+        <p><strong>{education.degree[lang]}</strong></p>
+        <p class="muted">{education.languages[lang]}</p>
+        <ul class="certs">
+          {education.certifications[lang].map((cert) => <li>{cert}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos" class="section" aria-labelledby="projects-title">
+    <div class="container">
+      <h2 id="projects-title" class="section-title">{t(lang, 'projects.title')}</h2>
+      <p class="section-subtitle">{t(lang, 'projects.subtitle')}</p>
+      <div class="projects">
+        {projects.map((project) => <ProjectCard lang={lang} project={project} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="section" aria-labelledby="contact-title">
+    <div class="container narrow contact">
+      <h2 id="contact-title" class="section-title">{t(lang, 'contact.title')}</h2>
+      <p class="section-subtitle">{t(lang, 'contact.text')}</p>
+      <div class="contact-actions">
+        <a class="btn btn-primary" href={`mailto:${profile.email}`}>{t(lang, 'contact.email')}: {profile.email}</a>
+        <a class="btn btn-ghost" href={profile.linkedin} rel="noopener">LinkedIn ↗</a>
+        <a class="btn btn-ghost" href={profile.github} rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+
+  .narrow p {
+    margin: 1rem 0 0;
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .job {
+    padding: 1.5rem;
+  }
+
+  .job-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .job h3 {
+    font-size: 1.15rem;
+  }
+
+  .company {
+    color: var(--accent);
+  }
+
+  .period {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .job ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  .job li + li {
+    margin-top: 0.4rem;
+  }
+
+  .skills {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .skill-group {
+    padding: 1.25rem;
+  }
+
+  .skill-group h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .skill-group ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .education-title {
+    margin-top: 3rem;
+  }
+
+  .education {
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .education p {
+    margin: 0 0 0.4rem;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .certs {
+    margin: 1rem 0 0;
+    padding-left: 1.2rem;
+    columns: 2 240px;
+  }
+
+  .projects {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .contact {
+    text-align: center;
+  }
+
+  .contact .section-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .contact-actions .btn-primary {
+    overflow-wrap: anywhere;
+  }
+</style>

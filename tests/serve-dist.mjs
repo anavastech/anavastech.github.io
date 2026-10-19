@@ -1,0 +1,38 @@
+// Servidor estático mínimo para que Playwright pruebe dist/ tal como lo publica GitHub Pages.
+// No se usa `astro preview` porque sin terminal interactiva (CI) Astro 7 lo manda a segundo plano
+// y el webServer de Playwright lo da por caído.
+import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createServer } from 'node:http';
+import { extname, join, normalize } from 'node:path';
+
+const ROOT = join(process.cwd(), 'dist');
+const PORT = Number(process.env.PORT ?? 4321);
+const TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.avif': 'image/avif',
+  '.pdf': 'application/pdf',
+  '.md': 'text/markdown; charset=utf-8',
+};
+
+createServer((req, res) => {
+  const pathname = decodeURIComponent(new URL(req.url ?? '/', 'http://localhost').pathname);
+  let file = normalize(join(ROOT, pathname));
+  if (!file.startsWith(ROOT)) {
+    res.writeHead(403).end();
+    return;
+  }
+  if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
+  if (!existsSync(file)) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' }).end('404');
+    return;
+  }
+  res.writeHead(200, { 'Content-Type': TYPES[extname(file)] ?? 'application/octet-stream' });
+  createReadStream(file).pipe(res);
+}).listen(PORT, () => console.log(`dist/ en http://localhost:${PORT}`));

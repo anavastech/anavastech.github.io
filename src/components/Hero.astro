@@ -1,0 +1,152 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { profile } from '../data/profile';
+import { cvPath, profilePhoto } from '../data/assets';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const photo = profilePhoto();
+const cv = cvPath(lang);
+---
+
+<section class="hero" aria-labelledby="hero-name">
+  <div class="container grid">
+    <div class="text">
+      <p class="eyebrow">{t(lang, 'hero.role')} · {profile.location[lang]}</p>
+      <h1 id="hero-name">{profile.name}</h1>
+      <p class="tagline">{profile.tagline[lang]}</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#proyectos">{t(lang, 'hero.cta.projects')}</a>
+        {
+          cv && (
+            <a class="btn btn-ghost" href={cv} download data-testid="cv-download">
+              {t(lang, 'hero.cta.cv')}
+            </a>
+          )
+        }
+      </div>
+      <ul class="social">
+        <li><a href={profile.github} rel="noopener">GitHub</a></li>
+        <li><a href={profile.linkedin} rel="noopener">LinkedIn</a></li>
+        <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+      </ul>
+    </div>
+    <div class="avatar" data-testid="profile-photo">
+      {
+        photo ? (
+          <img src={photo} alt={t(lang, 'about.photoAlt')} width="320" height="320" />
+        ) : (
+          <span class="initials" aria-hidden="true">
+            {profile.initials}
+          </span>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 2.5rem 0 3rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
+  }
+
+  .tagline {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 52ch;
+    margin: 1rem 0 1.75rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0 0;
+    font-size: 0.95rem;
+  }
+
+  .social a {
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+
+  .social a:hover {
+    color: var(--accent);
+  }
+
+  .avatar {
+    order: -1;
+    justify-self: start;
+    width: 140px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--accent), var(--shadow);
+    background: var(--accent-soft);
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .initials {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  @media (min-width: 800px) {
+    .initials {
+      font-size: 5rem;
+    }
+
+    .hero {
+      padding: 6rem 0 5rem;
+    }
+
+    .grid {
+      grid-template-columns: 1.6fr 1fr;
+    }
+
+    .avatar {
+      order: 0;
+      width: 300px;
+      justify-self: end;
+    }
+  }
+</style>

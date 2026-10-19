@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import { homePath, projectPath, t, type Lang } from '../i18n/ui';
+import { profile } from '../data/profile';
+import type { Project } from '../data/projects';
+
+interface Props {
+  lang: Lang;
+  project: Project;
+}
+
+const { lang, project } = Astro.props;
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
+---
+
+<Base
+  lang={lang}
+  title={`${project.name} — ${profile.shortName}`}
+  description={project.summary[lang]}
+  alternate={projectPath(otherLang, project.slug)}
+>
+  <article class="section">
+    <div class="container narrow">
+      <a class="back" href={`${homePath(lang)}#proyectos`}>{t(lang, 'projects.back')}</a>
+      <h1>{project.name}</h1>
+      <img class="badge" src={badge} alt={`CI: ${project.name}`} height="20" />
+      <p class="lead">{project.summary[lang]}</p>
+
+      <dl class="stats">
+        {
+          project.stats.map((stat) => (
+            <div class="card">
+              <dt>{stat.value}</dt>
+              <dd>{stat.label[lang]}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h2>{t(lang, 'projects.highlights')}</h2>
+      <div class="highlights">
+        {
+          project.highlights[lang].map((item) => (
+            <section class="card highlight">
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </section>
+          ))
+        }
+      </div>
+
+      <h2>{t(lang, 'projects.stack')}</h2>
+      <ul class="stack">
+        {project.stack.map((tech) => <li class="tag">{tech}</li>)}
+      </ul>
+
+      <h2>{t(lang, 'projects.run')}</h2>
+      {/* tabindex: en móvil el comando no cabe y hace scroll; así también se puede desplazar con el teclado */}
+      <pre class="card" tabindex="0" aria-label={t(lang, 'projects.run')}><code>{project.run}</code></pre>
+
+      <a class="btn btn-primary repo" href={project.repo} rel="noopener" data-testid="repo-link">
+        {t(lang, 'projects.repo')} ↗
+      </a>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .narrow {
+    max-width: 820px;
+  }
+
+  .back {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 5vw, 2.6rem);
+  }
+
+  .badge {
+    margin-top: 0.75rem;
+  }
+
+  .lead {
+    font-size: 1.12rem;
+    color: var(--muted);
+    margin: 1.25rem 0 2rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 2.5rem 0 1rem;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .stats .card {
+    padding: 1rem;
+  }
+
+  dt {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--accent);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .highlights {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .highlight {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .highlight h3 {
+    font-size: 1.05rem;
+  }
+
+  .highlight p {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+  }
+
+  .repo {
+    margin-top: 2.5rem;
+  }
+</style>
