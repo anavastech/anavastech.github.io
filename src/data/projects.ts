@@ -24,8 +24,8 @@ export const projects: Project[] = [
     repo: `${GITHUB}/appium-cucumber-java-framework`,
     workflow: 'android.yml',
     summary: {
-      es: 'Automatización E2E de una app Android con Appium, Java 21 y Cucumber en español. Va más allá de tocar botones: cambia de contexto nativo a WebView, hace gestos, manda la app a segundo plano y simula el GPS.',
-      en: 'E2E automation of an Android app with Appium, Java 21 and Cucumber (scenarios in Spanish). It goes beyond tapping buttons: it switches from native to WebView context, performs gestures, sends the app to the background and mocks GPS.',
+      es: 'Automatización E2E de una app Android con Appium, Java 21 y Cucumber en español. Va más allá de tocar botones: cambia de contexto nativo a WebView, hace gestos, manda la app a segundo plano y usa el botón Atrás del sistema.',
+      en: 'E2E automation of an Android app with Appium, Java 21 and Cucumber (scenarios in Spanish). It goes beyond tapping buttons: it switches from native to WebView context, performs gestures, sends the app to the background and uses the system Back button.',
     },
     stats: [
       { value: '23', label: { es: 'escenarios', en: 'scenarios' } },
