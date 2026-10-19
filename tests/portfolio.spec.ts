@@ -41,6 +41,16 @@ test.describe('Inicio', () => {
     }
   });
 
+  test('cada tarjeta indica si es una app móvil o web', async ({ page }) => {
+    await page.goto('/');
+    for (const project of projects) {
+      const expected = project.kind === 'mobile' ? 'App móvil nativa' : 'Web + API';
+      await expect(page.getByTestId(`project-${project.slug}`).getByTestId('project-kind')).toHaveText(expected);
+    }
+    await page.goto('/en/');
+    await expect(page.getByTestId('project-appium').getByTestId('project-kind')).toHaveText('Native mobile app');
+  });
+
   test('sin foto en public/foto/ muestra las iniciales; con foto, la imagen', async ({ page }) => {
     await page.goto('/');
     const avatar = page.getByTestId('profile-photo');

@@ -2,14 +2,23 @@ import type { Lang } from '../i18n/ui';
 
 type Localized = Record<Lang, string>;
 
+export type ProjectKind = 'mobile' | 'web';
+
 export interface Project {
   slug: string;
   name: string;
+  /** Qué se automatiza: una app móvil nativa o sitios web + API. Se muestra como etiqueta en la tarjeta. */
+  kind: ProjectKind;
+  /** App o sitios de práctica sobre los que corren las pruebas. */
+  target: Localized;
   repo: string;
   /** Archivo del workflow de GitHub Actions, para el badge de CI. */
   workflow: string;
   summary: Localized;
+  /** Cifras clave: el valor y una explicación que se entienda sin conocer el proyecto. */
   stats: { value: string; label: Localized }[];
+  /** Las herramientas principales, para la tarjeta. El stack completo se ve en la página de detalle. */
+  keyStack: string[];
   stack: string[];
   highlights: Record<Lang, { title: string; text: string }[]>;
   run: string;
@@ -21,17 +30,20 @@ export const projects: Project[] = [
   {
     slug: 'appium',
     name: 'Appium Mobile Framework',
+    kind: 'mobile',
+    target: { es: 'My Demo App de Sauce Labs (Android)', en: 'Sauce Labs My Demo App (Android)' },
     repo: `${GITHUB}/appium-cucumber-java-framework`,
     workflow: 'android.yml',
     summary: {
-      es: 'Automatización E2E de una app Android con Appium, Java 21 y Cucumber en español. Va más allá de tocar botones: cambia de contexto nativo a WebView, hace gestos, manda la app a segundo plano y usa el botón Atrás del sistema.',
-      en: 'E2E automation of an Android app with Appium, Java 21 and Cucumber (scenarios in Spanish). It goes beyond tapping buttons: it switches from native to WebView context, performs gestures, sends the app to the background and uses the system Back button.',
+      es: 'Pruebas E2E de una app Android nativa, con escenarios Cucumber en español. Además de tocar botones, cambia al contexto web, hace gestos y usa funciones del sistema como el segundo plano y el botón Atrás.',
+      en: 'E2E tests for a native Android app, with Cucumber scenarios written in Spanish. Beyond tapping buttons, it switches into web context, performs gestures and uses system features like background and the Back button.',
     },
     stats: [
-      { value: '23', label: { es: 'escenarios', en: 'scenarios' } },
-      { value: '6', label: { es: 'features', en: 'features' } },
-      { value: 'Android', label: { es: 'emulador en CI', en: 'emulator in CI' } },
+      { value: '23', label: { es: 'escenarios BDD repartidos en 6 features', en: 'BDD scenarios across 6 features' } },
+      { value: 'Emulador', label: { es: 'Android en GitHub Actions: los @smoke corren en cada push', en: 'Android on GitHub Actions: @smoke runs on every push' } },
+      { value: 'WebView', label: { es: 'pasa de la vista nativa a una página web dentro de la app', en: 'switches from the native view to a web page inside the app' } },
     ],
+    keyStack: ['Java 21', 'Appium 3', 'Cucumber', 'JUnit 5', 'GitHub Actions'],
     stack: ['Java 21', 'Appium 3', 'UiAutomator2', 'Cucumber', 'JUnit 5', 'AssertJ', 'GitHub Actions'],
     highlights: {
       es: [
@@ -52,17 +64,20 @@ export const projects: Project[] = [
   {
     slug: 'selenium',
     name: 'Selenium + Cucumber Framework',
+    kind: 'web',
+    target: { es: 'SauceDemo (tienda web) y restful-booker (API)', en: 'SauceDemo (web store) and restful-booker (API)' },
     repo: `${GITHUB}/selenium-cucumber-java-framework`,
     workflow: 'selenium.yml',
     summary: {
-      es: 'Framework E2E y de API con Java 21, Selenium 4 y Cucumber sobre SauceDemo y restful-booker. Gherkin ejecutable, IDs trazables por caso y ejecución en Chrome, Firefox, Edge y viewport móvil.',
-      en: 'E2E and API framework with Java 21, Selenium 4 and Cucumber against SauceDemo and restful-booker. Executable Gherkin, traceable IDs per test case and runs on Chrome, Firefox, Edge and a mobile viewport.',
+      es: 'Pruebas de interfaz web y de API en un mismo framework Java. Cada escenario Gherkin es ejecutable y tiene un ID trazable, y los defectos reales de la app quedan documentados como tests.',
+      en: 'Web UI and API tests in a single Java framework. Every Gherkin scenario is executable and has a traceable ID, and the app’s real defects are documented as tests.',
     },
     stats: [
-      { value: '52', label: { es: 'escenarios UI + API', en: 'UI + API scenarios' } },
-      { value: '3 + 1', label: { es: 'navegadores + móvil en CI', en: 'browsers + mobile in CI' } },
-      { value: '4.5×', label: { es: 'suite más rápida (215→48 s)', en: 'faster suite (215→48 s)' } },
+      { value: '52', label: { es: 'escenarios entre interfaz web y API', en: 'scenarios across web UI and API' } },
+      { value: '3 + vista móvil', label: { es: 'Chrome, Firefox y Edge, más Chrome simulando la pantalla de un celular', en: 'Chrome, Firefox and Edge, plus Chrome emulating a phone screen' } },
+      { value: '4.5×', label: { es: 'más rápida: la suite completa bajó de 215 s a 48 s', en: 'faster: the full suite went from 215 s to 48 s' } },
     ],
+    keyStack: ['Java 21', 'Selenium 4', 'Cucumber 7', 'REST Assured', 'Allure'],
     stack: ['Java 21', 'Selenium 4', 'Cucumber 7', 'PicoContainer', 'REST Assured', 'axe-core', 'Allure', 'Datafaker'],
     highlights: {
       es: [
@@ -83,17 +98,20 @@ export const projects: Project[] = [
   {
     slug: 'playwright',
     name: 'Playwright + TypeScript Suite',
+    kind: 'web',
+    target: { es: 'SauceDemo (tienda web) y restful-booker (API)', en: 'SauceDemo (web store) and restful-booker (API)' },
     repo: `${GITHUB}/playwright-ts-qa-suite`,
     workflow: 'playwright.yml',
     summary: {
-      es: 'Suite E2E y de API con Playwright y TypeScript sobre SauceDemo y restful-booker. Cada caso está escrito en Gherkin con su ID y un chequeo en CI garantiza que documentación y tests no se desincronicen.',
-      en: 'E2E and API suite with Playwright and TypeScript against SauceDemo and restful-booker. Every case is written in Gherkin with its ID, and a CI check guarantees docs and tests never drift apart.',
+      es: 'Pruebas de interfaz web y de API con Playwright. Cada caso está documentado en Gherkin con su ID, y un chequeo en CI falla si la documentación y los tests dejan de coincidir.',
+      en: 'Web UI and API tests with Playwright. Every case is documented in Gherkin with its ID, and a CI check fails if docs and tests stop matching.',
     },
     stats: [
-      { value: '41', label: { es: 'casos con ID trazable', en: 'traceable test cases' } },
-      { value: '3 + 1', label: { es: 'navegadores + móvil', en: 'browsers + mobile' } },
-      { value: 'a11y', label: { es: 'WCAG 2.0 A/AA', en: 'WCAG 2.0 A/AA' } },
+      { value: '41', label: { es: 'casos con ID, cada uno enlazado a su escenario Gherkin', en: 'cases with an ID, each linked to its Gherkin scenario' } },
+      { value: '3 + vista móvil', label: { es: 'Chromium, Firefox y WebKit (Safari), más un celular simulado', en: 'Chromium, Firefox and WebKit (Safari), plus an emulated phone' } },
+      { value: 'WCAG', label: { es: 'revisión automática de accesibilidad, niveles A y AA', en: 'automated accessibility checks, levels A and AA' } },
     ],
+    keyStack: ['TypeScript', 'Playwright', 'zod', 'axe-core', 'GitHub Actions'],
     stack: ['TypeScript', 'Playwright', 'zod', 'axe-core', 'Biome', 'GitHub Actions'],
     highlights: {
       es: [

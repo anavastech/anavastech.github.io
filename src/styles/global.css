@@ -9,6 +9,9 @@
   --accent-strong: #075e55;
   --accent-soft: #dff3f0;
   --on-accent: #ffffff;
+  /* Color de los proyectos de app móvil, para distinguirlos de los web (que usan --accent). */
+  --mobile: #5b3cc4;
+  --mobile-soft: #ece7fb;
   --radius: 14px;
   --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 6%);
   --max: 1080px;
@@ -29,6 +32,8 @@
     --accent-strong: #6fdccd;
     --accent-soft: #12302d;
     --on-accent: #06201d;
+    --mobile: #b8a4ff;
+    --mobile-soft: #2a2148;
     --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
     color-scheme: dark;
   }
