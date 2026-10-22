@@ -20,11 +20,12 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
   description={project.summary[lang]}
   alternate={projectPath(otherLang, project.slug)}
 >
-  <article class="section">
+  <article class={`section kind-${project.kind}`}>
     <div class="container narrow">
       <a class="back" href={`${homePath(lang)}#proyectos`}>{t(lang, 'projects.back')}</a>
+      <p class="kicker">{t(lang, `projects.kind.${project.kind}`)}</p>
       <h1>{project.name}</h1>
-      <img class="badge" src={badge} alt={`CI: ${project.name}`} height="20" />
+      <p class="target">{t(lang, 'projects.target')}: {project.target[lang]}</p>
       <p class="lead">{project.summary[lang]}</p>
 
       <dl class="stats">
@@ -37,6 +38,11 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
           ))
         }
       </dl>
+
+      <div class="ci card">
+        <img class="badge" src={badge} alt={`CI: ${project.name}`} height="20" />
+        <p><strong>{t(lang, 'projects.ci')}:</strong> {project.ci[lang]}</p>
+      </div>
 
       <h2>{t(lang, 'projects.highlights')}</h2>
       <div class="highlights">
@@ -59,9 +65,18 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
       {/* tabindex: en móvil el comando no cabe y hace scroll; así también se puede desplazar con el teclado */}
       <pre class="card" tabindex="0" aria-label={t(lang, 'projects.run')}><code>{project.run}</code></pre>
 
-      <a class="btn btn-primary repo" href={project.repo} rel="noopener" data-testid="repo-link">
-        {t(lang, 'projects.repo')} ↗
-      </a>
+      <div class="links">
+        <a class="btn btn-primary" href={project.repo} rel="noopener" data-testid="repo-link">
+          {t(lang, 'projects.repo')} ↗
+        </a>
+        {
+          project.report && (
+            <a class="btn btn-ghost" href={project.report} rel="noopener" data-testid="report-link">
+              {t(lang, 'projects.report')} ↗
+            </a>
+          )
+        }
+      </div>
     </div>
   </article>
 </Base>
@@ -72,7 +87,8 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
   }
 
   .back {
-    display: inline-block;
+    display: block;
+    width: fit-content;
     margin-bottom: 1.5rem;
     font-weight: 500;
     text-decoration: none;
@@ -82,8 +98,40 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
     font-size: clamp(1.9rem, 5vw, 2.6rem);
   }
 
-  .badge {
+  .kind-mobile {
+    --kind: var(--mobile);
+  }
+
+  .kind-api {
+    --kind: var(--api);
+  }
+
+  .kicker {
+    color: var(--kind, var(--accent));
+  }
+
+  .target {
+    margin: 0.75rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .ci {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
     margin-top: 0.75rem;
+    padding: 0.9rem 1.1rem;
+  }
+
+  .ci p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .ci strong {
+    color: var(--text);
   }
 
   .lead {
@@ -110,8 +158,9 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
 
   dt {
     font-weight: 700;
-    font-size: 1.4rem;
-    color: var(--accent);
+    font-size: 1.6rem;
+    letter-spacing: -0.03em;
+    color: var(--kind, var(--accent));
   }
 
   dd {
@@ -125,8 +174,15 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
     gap: 1rem;
   }
 
+  @media (min-width: 700px) {
+    .highlights {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   .highlight {
     padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--kind, var(--accent));
   }
 
   .highlight h3 {
@@ -153,7 +209,10 @@ const badge = `${project.repo}/actions/workflows/${project.workflow}/badge.svg`;
     overflow-x: auto;
   }
 
-  .repo {
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 2.5rem;
   }
 </style>

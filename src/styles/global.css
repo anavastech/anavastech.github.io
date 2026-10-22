@@ -12,6 +12,10 @@
   /* Color de los proyectos de app móvil, para distinguirlos de los web (que usan --accent). */
   --mobile: #5b3cc4;
   --mobile-soft: #ece7fb;
+  /* Color de los proyectos solo de API. */
+  --api: #a14f05;
+  --api-soft: #fbeedd;
+  --grid-line: rgb(16 24 40 / 5%);
   --radius: 14px;
   --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 6%);
   --max: 1080px;
@@ -34,6 +38,9 @@
     --on-accent: #06201d;
     --mobile: #b8a4ff;
     --mobile-soft: #2a2148;
+    --api: #f3b467;
+    --api-soft: #3a2a14;
+    --grid-line: rgb(255 255 255 / 4%);
     --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
     color-scheme: dark;
   }
@@ -115,9 +122,41 @@ h3 {
   border-top: 1px solid var(--border);
 }
 
+@media (min-width: 800px) {
+  .section {
+    padding: 6rem 0;
+  }
+}
+
+/* Secciones alternas sobre la superficie, para separar sin depender solo de la línea. */
+.section-alt {
+  background: var(--surface);
+}
+
 .section-title {
-  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.3rem);
   margin-bottom: 0.5rem;
+}
+
+/* Etiqueta pequeña en monoespaciada sobre cada título de sección ("01 · Experiencia"). */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.kicker::before {
+  content: '';
+  width: 1.5rem;
+  height: 2px;
+  background: currentColor;
 }
 
 .section-subtitle {

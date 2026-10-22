@@ -12,7 +12,7 @@ const PAGES = [
 ];
 
 test.describe('Inicio', () => {
-  test('muestra nombre, rol y los tres proyectos en español', async ({ page }) => {
+  test('muestra nombre, rol y todos los proyectos en español', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'es');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Alexander Navas Rivadeneyra');
@@ -41,10 +41,10 @@ test.describe('Inicio', () => {
     }
   });
 
-  test('cada tarjeta indica si es una app móvil o web', async ({ page }) => {
+  test('cada tarjeta indica si es app móvil, web o API', async ({ page }) => {
     await page.goto('/');
     for (const project of projects) {
-      const expected = project.kind === 'mobile' ? 'App móvil nativa' : 'Web + API';
+      const expected = { mobile: 'App móvil nativa', web: 'Web + API', api: 'API REST' }[project.kind];
       await expect(page.getByTestId(`project-${project.slug}`).getByTestId('project-kind')).toHaveText(expected);
     }
     await page.goto('/en/');
@@ -66,6 +66,18 @@ test.describe('Inicio', () => {
 });
 
 test.describe('Detalle de proyecto', () => {
+  test('solo los proyectos con reporte publicado enlazan a él', async ({ page }) => {
+    for (const project of projects) {
+      await page.goto(`/proyectos/${project.slug}/`);
+      const report = page.getByTestId('report-link');
+      if (project.report) {
+        await expect(report).toHaveAttribute('href', project.report);
+      } else {
+        await expect(report).toHaveCount(0);
+      }
+    }
+  });
+
   test('el selector de idioma mantiene el mismo proyecto', async ({ page }) => {
     await page.goto('/proyectos/appium/');
     await page.getByTestId('lang-switch').click();

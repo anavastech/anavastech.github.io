@@ -15,7 +15,10 @@ const cv = cvPath(lang);
 <section class="hero" aria-labelledby="hero-name">
   <div class="container grid">
     <div class="text">
-      <p class="eyebrow">{t(lang, 'hero.role')} · {profile.location[lang]}</p>
+      <p class="status">
+        <span class="dot" aria-hidden="true"></span>
+        {t(lang, 'hero.role')} · {profile.location[lang]}
+      </p>
       <h1 id="hero-name">{profile.name}</h1>
       <p class="tagline">{profile.tagline[lang]}</p>
       <div class="actions">
@@ -27,12 +30,9 @@ const cv = cvPath(lang);
             </a>
           )
         }
+        <a class="btn btn-ghost" href={profile.github} rel="noopener">GitHub ↗</a>
+        <a class="btn btn-ghost" href={profile.linkedin} rel="noopener">LinkedIn ↗</a>
       </div>
-      <ul class="social">
-        <li><a href={profile.github} rel="noopener">GitHub</a></li>
-        <li><a href={profile.linkedin} rel="noopener">LinkedIn</a></li>
-        <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
-      </ul>
     </div>
     <div class="avatar" data-testid="profile-photo">
       {
@@ -46,11 +46,40 @@ const cv = cvPath(lang);
       }
     </div>
   </div>
+
+  <div class="container">
+    <dl class="facts">
+      {
+        profile.facts.map((fact) => (
+          <div>
+            <dt>{fact.value[lang]}</dt>
+            <dd>{fact.label[lang]}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
 </section>
 
 <style>
   .hero {
+    position: relative;
     padding: 2.5rem 0 3rem;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Cuadrícula tenue que se desvanece hacia abajo, con un brillo del color de acento detrás del texto. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 55% at 15% 20%, var(--accent-soft), transparent 70%),
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px;
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
   }
 
   .grid {
@@ -59,59 +88,58 @@ const cv = cvPath(lang);
     align-items: center;
   }
 
-  .eyebrow {
-    margin: 0 0 0.75rem;
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.95rem;
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 1.1rem;
+    padding: 0.3rem 0.85rem 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
   }
 
   h1 {
-    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    font-size: clamp(2.3rem, 6.5vw, 4rem);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
   }
 
   .tagline {
-    font-size: 1.15rem;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
     color: var(--muted);
-    max-width: 52ch;
-    margin: 1rem 0 1.75rem;
+    max-width: 46ch;
+    margin: 1.25rem 0 2rem;
   }
 
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .social {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    list-style: none;
-    padding: 0;
-    margin: 1.75rem 0 0;
-    font-size: 0.95rem;
-  }
-
-  .social a {
-    color: var(--muted);
-    overflow-wrap: anywhere;
-  }
-
-  .social a:hover {
-    color: var(--accent);
+    gap: 0.6rem;
   }
 
   .avatar {
     order: -1;
     justify-self: start;
-    width: 140px;
+    width: 128px;
     aspect-ratio: 1;
-    border-radius: 50%;
+    border-radius: 28px;
     overflow: hidden;
     border: 4px solid var(--surface);
-    box-shadow: 0 0 0 2px var(--accent), var(--shadow);
+    box-shadow: 0 0 0 1px var(--border), var(--shadow);
     background: var(--accent-soft);
+    rotate: 2deg;
   }
 
   .avatar img {
@@ -130,23 +158,66 @@ const cv = cvPath(lang);
     color: var(--accent);
   }
 
-  @media (min-width: 800px) {
-    .initials {
-      font-size: 5rem;
-    }
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin: 3rem 0 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--border);
+    overflow: hidden;
+  }
 
+  .facts div {
+    padding: 1.1rem 1.25rem;
+    background: var(--surface);
+  }
+
+  /* En dos columnas, la tercera cifra ocupa todo el ancho para no dejar un hueco. */
+  .facts div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .facts dt {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .facts dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  @media (min-width: 800px) {
     .hero {
-      padding: 6rem 0 5rem;
+      padding: 6rem 0 4.5rem;
     }
 
     .grid {
-      grid-template-columns: 1.6fr 1fr;
+      grid-template-columns: 1.7fr 1fr;
     }
 
     .avatar {
       order: 0;
       width: 300px;
       justify-self: end;
+    }
+
+    .initials {
+      font-size: 5rem;
+    }
+
+    .facts {
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 4rem;
+    }
+
+    .facts div:last-child:nth-child(odd) {
+      grid-column: auto;
     }
   }
 </style>

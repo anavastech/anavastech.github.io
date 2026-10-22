@@ -17,23 +17,29 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
 <Base lang={lang} title={`${profile.shortName} — ${t(lang, 'hero.role')}`} alternate={homePath(otherLang)}>
   <Hero lang={lang} />
 
-  <section id="sobre-mi" class="section" aria-labelledby="about-title">
-    <div class="container narrow">
-      <h2 id="about-title" class="section-title">{t(lang, 'about.title')}</h2>
-      {profile.about[lang].map((paragraph) => <p>{paragraph}</p>)}
+  <section id="sobre-mi" class="section section-alt" aria-labelledby="about-title">
+    <div class="container about">
+      <div>
+        <p class="kicker">01</p>
+        <h2 id="about-title" class="section-title">{t(lang, 'about.title')}</h2>
+      </div>
+      <div class="about-text">
+        {profile.about[lang].map((paragraph, i) => <p class={i === 0 ? 'lead' : undefined}>{paragraph}</p>)}
+      </div>
     </div>
   </section>
 
   <section id="experiencia" class="section" aria-labelledby="experience-title">
     <div class="container">
+      <p class="kicker">02</p>
       <h2 id="experience-title" class="section-title">{t(lang, 'experience.title')}</h2>
       <ol class="timeline">
         {
           experience.map((job) => (
-            <li class="card job">
+            <li class="job">
               <div class="job-head">
                 <h3>
-                  {job.role[lang]} · <span class="company">{job.company}</span>
+                  {job.role[lang]} <span class="company">· {job.company}</span>
                 </h3>
                 <p class="period">{job.period[lang]}</p>
               </div>
@@ -47,35 +53,9 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
     </div>
   </section>
 
-  <section id="habilidades" class="section" aria-labelledby="skills-title">
+  <section id="proyectos" class="section section-alt" aria-labelledby="projects-title">
     <div class="container">
-      <h2 id="skills-title" class="section-title">{t(lang, 'skills.title')}</h2>
-      <div class="skills">
-        {
-          skills.map((group) => (
-            <div class="card skill-group">
-              <h3>{group.name[lang]}</h3>
-              <ul>
-                {group.items.map((item) => <li class="tag">{item}</li>)}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-
-      <h2 class="section-title education-title">{t(lang, 'education.title')}</h2>
-      <div class="card education">
-        <p><strong>{education.degree[lang]}</strong></p>
-        <p class="muted">{education.languages[lang]}</p>
-        <ul class="certs">
-          {education.certifications[lang].map((cert) => <li>{cert}</li>)}
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="proyectos" class="section" aria-labelledby="projects-title">
-    <div class="container">
+      <p class="kicker">03</p>
       <h2 id="projects-title" class="section-title">{t(lang, 'projects.title')}</h2>
       <p class="section-subtitle">{t(lang, 'projects.subtitle')}</p>
       <div class="projects">
@@ -84,50 +64,118 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
     </div>
   </section>
 
-  <section id="contacto" class="section" aria-labelledby="contact-title">
-    <div class="container narrow contact">
-      <h2 id="contact-title" class="section-title">{t(lang, 'contact.title')}</h2>
-      <p class="section-subtitle">{t(lang, 'contact.text')}</p>
-      <div class="contact-actions">
-        <a class="btn btn-primary" href={`mailto:${profile.email}`}>{t(lang, 'contact.email')}: {profile.email}</a>
-        <a class="btn btn-ghost" href={profile.linkedin} rel="noopener">LinkedIn ↗</a>
-        <a class="btn btn-ghost" href={profile.github} rel="noopener">GitHub ↗</a>
+  <section id="habilidades" class="section" aria-labelledby="skills-title">
+    <div class="container">
+      <p class="kicker">04</p>
+      <h2 id="skills-title" class="section-title">{t(lang, 'skills.title')}</h2>
+      <dl class="skills">
+        {
+          skills.map((group) => (
+            <div class="skill-row">
+              <dt>{group.name[lang]}</dt>
+              <dd>
+                <ul>
+                  {group.items.map((item) => <li class="tag">{item}</li>)}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="edu-grid">
+        <div class="card edu">
+          <h3>{t(lang, 'education.title')}</h3>
+          <p><strong>{education.degree[lang]}</strong></p>
+          <p class="muted">{education.languages[lang]}</p>
+        </div>
+        <div class="card edu">
+          <h3>{t(lang, 'education.certs')}</h3>
+          <ul class="certs">
+            {education.certifications[lang].map((cert) => <li>{cert}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="section contact-section" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="contact card">
+        <h2 id="contact-title" class="section-title">{t(lang, 'contact.title')}</h2>
+        <p class="section-subtitle">{t(lang, 'contact.text')}</p>
+        <div class="contact-actions">
+          <a class="btn btn-primary" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a class="btn btn-ghost" href={profile.linkedin} rel="noopener">LinkedIn ↗</a>
+          <a class="btn btn-ghost" href={profile.github} rel="noopener">GitHub ↗</a>
+        </div>
       </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .narrow {
-    max-width: 760px;
+  .about {
+    display: grid;
+    gap: 1rem 3rem;
   }
 
-  .narrow p {
-    margin: 1rem 0 0;
+  .about-text p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    max-width: 65ch;
   }
 
+  .about-text .lead {
+    font-size: 1.2rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  @media (min-width: 800px) {
+    .about {
+      grid-template-columns: 1fr 2.2fr;
+    }
+  }
+
+  /* Línea de tiempo: una línea vertical con un punto por trabajo. */
   .timeline {
     list-style: none;
     padding: 0;
-    margin: 1.5rem 0 0;
+    margin: 2rem 0 0;
     display: grid;
-    gap: 1.25rem;
+    gap: 2.5rem;
+    border-left: 2px solid var(--border);
   }
 
   .job {
-    padding: 1.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .job::before {
+    content: '';
+    position: absolute;
+    left: calc(-0.4rem - 1px);
+    top: 0.45rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
   }
 
   .job-head {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: baseline;
     gap: 0.25rem 1rem;
     margin-bottom: 0.75rem;
   }
 
   .job h3 {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
   }
 
   .company {
@@ -136,36 +184,57 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
 
   .period {
     margin: 0;
+    font-family: var(--mono);
+    font-size: 0.82rem;
     color: var(--muted);
-    font-size: 0.92rem;
   }
 
   .job ul {
     margin: 0;
-    padding-left: 1.2rem;
+    padding-left: 1.1rem;
+    color: var(--muted);
+  }
+
+  .job li::marker {
+    color: var(--accent);
   }
 
   .job li + li {
-    margin-top: 0.4rem;
+    margin-top: 0.45rem;
+  }
+
+  .projects {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 860px) {
+    .projects {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .skills {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .skill-row {
     display: grid;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.5rem 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
   }
 
-  .skill-group {
-    padding: 1.25rem;
+  .skill-row dt {
+    font-weight: 600;
   }
 
-  .skill-group h3 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
+  .skill-row dd {
+    margin: 0;
   }
 
-  .skill-group ul {
+  .skill-row ul {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
@@ -174,16 +243,36 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
     padding: 0;
   }
 
-  .education-title {
-    margin-top: 3rem;
+  @media (min-width: 700px) {
+    .skill-row {
+      grid-template-columns: 220px 1fr;
+      align-items: center;
+    }
   }
 
-  .education {
+  .edu-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 800px) {
+    .edu-grid {
+      grid-template-columns: 1fr 1.4fr;
+    }
+  }
+
+  .edu {
     padding: 1.5rem;
-    margin-top: 1.5rem;
   }
 
-  .education p {
+  .edu h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  .edu p {
     margin: 0 0 0.4rem;
   }
 
@@ -192,19 +281,23 @@ const otherLang: Lang = lang === 'es' ? 'en' : 'es';
   }
 
   .certs {
-    margin: 1rem 0 0;
-    padding-left: 1.2rem;
-    columns: 2 240px;
+    margin: 0;
+    padding-left: 1.1rem;
+    columns: 2 220px;
+    column-gap: 2rem;
   }
 
-  .projects {
-    display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  .certs li {
+    break-inside: avoid;
+    margin-bottom: 0.3rem;
   }
 
   .contact {
+    padding: 2.5rem 1.5rem;
     text-align: center;
+    background:
+      radial-gradient(70% 90% at 50% 0%, var(--accent-soft), transparent 70%),
+      var(--surface);
   }
 
   .contact .section-subtitle {
